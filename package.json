@@ -19,6 +19,5 @@
   "engines": {
     "node": ">=16"
   },
-  "license": "UNLICENSED",
-  "private": true
+  "license": "MIT"
 }
