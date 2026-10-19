@@ -1,0 +1,7 @@
+sbsync
+.sbsync-state.json
+.claude
+dist/
+node_modules/
+*.tgz
+.sbsync.json
