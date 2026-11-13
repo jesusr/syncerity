@@ -1,6 +1,6 @@
 {
   "name": "syncerity",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Bidirectional sync between local markdown files and a SilverBullet space",
   "bin": {
     "sbsync": "bin/sbsync.js"
@@ -14,8 +14,15 @@
     "test": "go vet ./... && go test ./...",
     "prepack": "node scripts/build.js"
   },
-  "os": ["linux", "darwin", "win32"],
-  "cpu": ["x64", "arm64"],
+  "os": [
+    "linux",
+    "darwin",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
   "engines": {
     "node": ">=16"
   },
