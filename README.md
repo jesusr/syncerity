@@ -28,7 +28,7 @@ Requires Go 1.22 or later. No external dependencies.
 - `localDir`: root of the markdown files, relative to the project directory.
 - `exclude`: directory names to ignore. `.git` and `node_modules` are always ignored.
 
-If the server requires a token, set it in the `SB_TOKEN` environment variable and it is sent as `Authorization: Bearer`. If it is not set, nothing is sent.
+- `token` (optional): bearer token, sent as `Authorization: Bearer`. Must match the server's `SB_AUTH_TOKEN`. The `SB_TOKEN` environment variable overrides it. If neither is set, nothing is sent. `.sbsync.json` is gitignored; keep it that way.
 
 ## Usage
 

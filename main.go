@@ -28,10 +28,11 @@ const (
 
 // Config lives in the repo root as .sbsync.json.
 type Config struct {
-	URL          string   `json:"url"`          // e.g. https://silverbullet.example.com
-	RemotePrefix string   `json:"remotePrefix"` // folder inside the space, e.g. Proyectos/syncerity
-	LocalDir     string   `json:"localDir"`     // markdown root, relative to config file (default ".")
-	Exclude      []string `json:"exclude"`      // directory names to skip
+	URL          string   `json:"url"`             // e.g. https://silverbullet.example.com
+	RemotePrefix string   `json:"remotePrefix"`    // folder inside the space, e.g. Proyectos/syncerity
+	LocalDir     string   `json:"localDir"`        // markdown root, relative to config file (default ".")
+	Exclude      []string `json:"exclude"`         // directory names to skip
+	Token        string   `json:"token,omitempty"` // bearer token (SilverBullet SB_AUTH_TOKEN); env SB_TOKEN overrides
 }
 
 // State maps relative path -> hash of the content at last successful sync.
@@ -277,10 +278,13 @@ func run(dir string, dry bool, prefer string, out io.Writer) error {
 		return err
 	}
 	root := filepath.Join(dir, cfg.LocalDir)
+	if t := os.Getenv("SB_TOKEN"); t != "" {
+		cfg.Token = t
+	}
 	rem := &Remote{
 		base:   cfg.URL,
 		prefix: cfg.RemotePrefix,
-		token:  os.Getenv("SB_TOKEN"),
+		token:  cfg.Token,
 		http:   &http.Client{Timeout: 30 * time.Second},
 	}
 
@@ -394,7 +398,7 @@ func initConfig(dir string) error {
 		Exclude:      []string{},
 	}
 	b, _ := json.MarshalIndent(c, "", "  ")
-	return os.WriteFile(p, append(b, '\n'), 0o644)
+	return os.WriteFile(p, append(b, '\n'), 0o600)
 }
 
 func mustAbs(p string) string {
@@ -410,7 +414,7 @@ func main() {
 	dir := fl.String("C", ".", "project directory (holds "+configFile+")")
 	prefer := fl.String("prefer", "local", "who wins when both sides changed: local (repo) | remote (SilverBullet)")
 	fl.Usage = func() {
-		fmt.Fprintf(os.Stderr, "usage: sbsync [flags] init|status|sync\n  token via env SB_TOKEN\n")
+		fmt.Fprintf(os.Stderr, "usage: sbsync [flags] init|status|sync\n  token via .sbsync.json token or env SB_TOKEN\n")
 		fl.PrintDefaults()
 	}
 	if len(os.Args) < 2 {
